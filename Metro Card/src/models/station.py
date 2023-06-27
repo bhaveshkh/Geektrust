@@ -1,3 +1,6 @@
+from src.core.constants import PASSENGERS_TYPES
+
+
 class Station:
     name = None
     total_collection = None
@@ -6,8 +9,11 @@ class Station:
     def __init__(self, name=None):
         self.name = name
         self.total_collection = 0
-        self.passengers = {"ADULT": 0, "SENIOR_CITIZEN": 0, "KID": 0}
         self.total_discount = 0
+
+        self.passengers = {}
+        for passenger_type in PASSENGERS_TYPES:
+            self.passengers[passenger_type] = 0
 
     def get_total_collection(self):
         return self.total_collection
