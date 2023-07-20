@@ -33,7 +33,7 @@ def main():
                 line_args[2].upper(),
                 line_args[3].upper(),
             )
-            metro_service.process_jounrey(card_id, passenger_type, source_station)
+            metro_service.process_journey(card_id, passenger_type, source_station)
 
         elif line_args[0].upper() == "PRINT_SUMMARY":
             pass

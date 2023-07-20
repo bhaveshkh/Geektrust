@@ -23,7 +23,8 @@ class Station:
 
         # Check if all values in the dictionary are the same
         if len(set(passenger_counts.values())) == 1:
-            return passenger_counts
+
+            return dict(sorted(passenger_counts.items()))
 
         sorted_passenger_counts = {
             passenger_type: count

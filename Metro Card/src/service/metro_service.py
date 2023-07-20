@@ -31,8 +31,9 @@ class MetroService:
         else:
             raise MetroCardExistsException
 
-    def process_jounrey(self, card_id, passenger_type, source_station):
-        if card_id not in self.metro_cards.keys():
+    def process_journey(self, card_id, passenger_type, source_station):
+        card = self.metro_cards.get(card_id)
+        if not card:
             raise InvalidCardException
 
         if passenger_type not in self.passengers:
@@ -41,9 +42,9 @@ class MetroService:
         if source_station not in self.stations:
             raise InvalidStationException
 
-        self.metro_cards[card_id].add_trip()
+        card.add_trip()
 
-        is_discount_applicable = self.metro_cards[card_id].discount_applicable()
+        is_discount_applicable = card.discount_applicable()
         journey_fare = 0
         service_charge = 0
         discount = 0
@@ -55,7 +56,7 @@ class MetroService:
             discount = passenger_fare - journey_fare
             self.stations[source_station].add_discount(discount)
 
-        metro_card_balance = self.metro_cards[card_id].get_balance()
+        metro_card_balance = card.get_balance()
         if journey_fare < metro_card_balance:
             self.metro_cards[card_id].deduct_balance(journey_fare)
             self.stations[source_station].add_collection(journey_fare)
@@ -64,7 +65,7 @@ class MetroService:
             recharge_amount = journey_fare - metro_card_balance
             service_charge = get_service_charge(recharge_amount)
             self.stations[source_station].add_collection(journey_fare + service_charge)
-            self.metro_cards[card_id].deduct_balance(metro_card_balance)
+            card.deduct_balance(metro_card_balance)
 
         self.stations[source_station].add_passenger_trip(passenger_type)
 
