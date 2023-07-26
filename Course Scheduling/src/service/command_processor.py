@@ -2,6 +2,7 @@ from src.service.course_service import CourseService
 from src.service.employee_service import EmployeeService
 from src.core.exception import InvalidCourseIdException
 from src.core.utils import get_unformatted_date
+from src.core.constants import *
 
 
 class CommandProcessor:
@@ -21,7 +22,7 @@ class CommandProcessor:
         if command_function:
             command_function(*args)
         else:
-            print("Invalid Command")
+            print(INVALID_COMMAND)
 
     def add_course_offering(self, *args):
         try:
@@ -29,8 +30,8 @@ class CommandProcessor:
             course_id = self.course_service.add_course_offering(course_name, instructor, date, min_employee,
                                                                 max_employee)
             print(course_id)
-        except Exception as e:
-            print("INPUT_DATA_ERROR")
+        except Exception:
+            print(INPUT_DATA_ERROR)
 
     def register(self, *args):
         try:
@@ -42,24 +43,24 @@ class CommandProcessor:
 
             # Check if course is full or allotted
             if not self.course_service.is_course_available(course_id):
-                print("COURSE_FULL_ERROR ")
+                print(COURSE_FULL_ERROR)
                 return
 
             course_offering_id = self.employee_service.register_employee(email, course_id)
             self.course_service.add_employee_to_course(course_id, course_offering_id)
 
-            print(course_offering_id, "ACCEPTED")
+            print(course_offering_id, ACCEPTED)
 
-        except Exception as e:
-            print("INPUT_DATA_ERROR")
+        except Exception:
+            print(INPUT_DATA_ERROR)
 
     def allot_course(self, *args):
         course_id = args[0]
         course_status = None
         if self.course_service.perform_course_allotment(course_id):
-            course_status = "CONFIRMED"
+            course_status = CONFIRMED
         else:
-            course_status = "COURSE_CANCELED"
+            course_status = COURSE_CANCELED
         course_details = self.course_service.get_course_details(course_id)
 
         output = []
@@ -77,7 +78,7 @@ class CommandProcessor:
         course_offering_id = args[0]
 
         course_offering_id, message = self.course_service.cancel_subscription(course_offering_id)
-        if message == "CANCEL_ACCEPTED":
+        if message == CANCEL_ACCEPTED:
             self.employee_service.cancel_subscription(course_offering_id)
 
         print(course_offering_id, message)

@@ -1,11 +1,11 @@
 from sys import argv
-
 from src.service.command_processor import CommandProcessor
-
+from src.core.constants import INVALID_INPUT
+from src.core.exception import InvalidInputException
 
 def main():
     if len(argv) != 2:
-        raise Exception("Invalid input")
+        raise InvalidInputException(INVALID_INPUT)
 
     command_processor = CommandProcessor()
 

@@ -2,7 +2,7 @@ from src.core.exception import CourseExistsException
 from src.core.utils import format_date
 from src.models.course import Course
 from collections import defaultdict
-
+from src.core.constants import *
 
 class CourseService:
     def __init__(self):
@@ -58,7 +58,7 @@ class CourseService:
         course_allotment_status = course.get_course_allotment_status()
 
         if course_allotment_status:
-            return course_offering_id, "CANCEL_REJECTED"
+            return course_offering_id, CANCEL_REJECTED
         else:
             self.course_participants[course_id].remove(course_offering_id)
-            return course_offering_id, "CANCEL_ACCEPTED"
+            return course_offering_id, CANCEL_ACCEPTED
