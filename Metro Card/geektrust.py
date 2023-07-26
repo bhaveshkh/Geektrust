@@ -2,44 +2,42 @@ from sys import argv
 from src.service.metro_service import MetroService
 from src.service.print_service import PrintService
 from src.core.exceptions import InvalidInputException
-from src.core.command_processor import BalanceCommandProcessor, CheckInCommandProcessor, PrintSummaryCommandProcessor
-
-balance_processor = BalanceCommandProcessor()
-check_in_processor = CheckInCommandProcessor()
-print_summary_processor = PrintSummaryCommandProcessor()
-
 
 def main():
     metro_service = MetroService()
     print_service = PrintService()
 
     if len(argv) != 2:
-        raise Exception("File path not entered")
+        raise InvalidInputException("File path not entered")
 
     file_path = argv[1]
-    f = open(file_path, "r")
-    lines = f.readlines()
+    process_input_file(file_path, metro_service, print_service)
+
+def process_input_file(file_path, metro_service, print_service):
+    with open(file_path, "r") as f:
+        lines = f.readlines()
 
     for line in lines:
-        line_args = line.strip().split(" ")
-        command = line_args[0].upper()
+        process_command_line(line.strip(), metro_service, print_service)
 
-        if command == "BALANCE":
-            card_id, balance = line_args[1].upper(), int(line_args[2])
-            balance_processor.process(metro_service, card_id, balance)
+def process_command_line(line, metro_service, print_service):
+    line_args = line.split()
+    command = line_args[0].upper()
 
-        elif command == "CHECK_IN":
-            card_id, passenger_type, source_station = line_args[1].upper(), line_args[2].upper(), line_args[3].upper(),
-            check_in_processor.process(
-                metro_service, card_id, passenger_type, source_station)
+    if command == "BALANCE":
+        card_id, balance = line_args[1].upper(), int(line_args[2])
+        metro_service.add_card(card_id, balance)
 
-        elif command == "PRINT_SUMMARY":
-            print_summary_processor.process(print_service, metro_service)
+    elif command == "CHECK_IN":
+        card_id, passenger_type, source_station = line_args[1].upper(), line_args[2].upper(), line_args[3].upper()
+        metro_service.process_journey(card_id, passenger_type, source_station)
 
-        else:
-            print(line)
-            raise InvalidInputException
+    elif command == "PRINT_SUMMARY":
+        print_service.print_output(metro_service)
 
+    else:
+        print(line)
+        raise InvalidInputException("Invalid command provided")
 
 if __name__ == "__main__":
     main()
