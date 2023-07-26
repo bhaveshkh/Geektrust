@@ -10,14 +10,15 @@ class CourseService:
         self.course_participants = defaultdict(set)
 
     def add_course_offering(self, course_name, instructor, date, min_employees, max_employees):
-        # If a course already exists with name raise Exception
-        if course_name in self.courses:
-            raise CourseExistsException
 
         # Create a course object and add it to available courses
         formatted_date = format_date(date)
         course = Course(course_name, instructor, formatted_date, int(min_employees), int(max_employees))
         course_id = course.get_course_id()
+
+        if course_id in self.courses:
+            raise CourseExistsException
+        
         self.courses[course_id] = course
         return course_id
 

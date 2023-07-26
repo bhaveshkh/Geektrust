@@ -15,7 +15,7 @@ class Course:
     def __str__(self):
         return f"course_name: {self.course_name}  instructor_name: {self.instructor_name}  " \
                f"start_date: {self.start_date}  min_employees: {self.min_employees}  max_employees: {self.max_employees}  " \
-               f"allotted: {self.allotted}  course_id: {self.course_id}"
+               f"allotted: {self.allotted}  course_id: {self.course_id}  registered_emps : {self.registered_employees}"
 
     def get_course_allotment_status(self):
         return self.allotted
@@ -31,6 +31,7 @@ class Course:
             self.allotted = True
             return True
         else:
+            self.allotted = False
             return False
 
     def get_course_name(self):
